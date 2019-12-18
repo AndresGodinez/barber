@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\Http\Requests\ClientStoreRequest;
+use App\Http\Requests\ClientUpdateRequest;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -12,73 +14,36 @@ class ClientController extends Controller
     {
         $name = $request->get('name');
 
-        $clients = Client::name($name)->paginate();
+        $clients = Client::name($name)->orderBy('id', 'desc')->paginate();
         return view('clients.index', compact('clients'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        return view('clients.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(ClientStoreRequest $request)
     {
-        //
+        $client = new Client();
+        $client->createAClient($request);
+        return redirect('clients');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Client  $client
-     * @return \Illuminate\Http\Response
-     */
     public function show(Client $client)
     {
-        //
+        return view('clients.show', compact('client'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Client  $client
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Client $client)
     {
-        //
+        return view('clients.edit', compact('client'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Client $client)
+    public function update(ClientUpdateRequest $request, Client $client)
     {
-        //
+        $client->updateInformation($request);
+        return redirect(route('clients.index'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Client $client)
-    {
-        //
-    }
 }
