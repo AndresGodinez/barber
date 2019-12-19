@@ -15,11 +15,25 @@
 </template>
 
 <script>
+    import Axios from 'axios';
 
     export default {
+        data(){
+            let products = [];
+          return{
+              products
+          }  
+        },
 
         mounted() {
-            console.log('Component mounted.')
+            this.getProducts()
+        },
+        methods:{
+            async getProducts(){
+                let apiProducts = await Axios.get('api/get-products');
+                this.products = apiProducts.data.data;
+            }
         }
+        
     }
 </script>
