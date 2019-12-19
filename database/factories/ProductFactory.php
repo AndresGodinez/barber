@@ -11,5 +11,6 @@ $factory->define(Product::class, function (Faker $faker) {
         'code' => $faker->word . $faker->postcode,
         'cost' => $cost = $faker->numberBetween(12, 100),
         'sale_price' => $cost * $faker->numberBetween(20, 100),
+        'active' => $faker->numberBetween(0,1),
     ];
 });
