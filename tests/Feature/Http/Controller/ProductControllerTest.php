@@ -16,10 +16,16 @@ class ProductControllerTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $products = factory(Product::class)->times(10)->create();
+
         $user = $this->getDefaultUser();
         $response = $this->actingAs($user)->get(route('products.index'));
         $response->assertStatus(200);
         $response->assertViewIs('products.index');
+
+        foreach ($products as $product) {
+            $response->assertSee($product->name);
+        }
     }
 
     /** @test */
@@ -95,7 +101,7 @@ class ProductControllerTest extends TestCase
                 'code' => $code = $this->faker->word . $this->faker->postcode,
                 'cost' => $cost = $product->cost,
                 'sale_price' => $salePrice = $product->sale_price
-        ]);
+            ]);
 
         $this->assertDatabaseHas('products', [
             'name' => $name,
