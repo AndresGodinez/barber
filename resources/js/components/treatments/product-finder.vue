@@ -1,29 +1,27 @@
 <template>
-<div>
-    <div class="col-md-12">
-        <vue-autosuggest
-                v-model="query"
-                :suggestions="filteredOptions"
-                @focus="focusMe"
-                @click="clickHandler"
-                @input="onInputChange"
-                @selected="onSelected"
-                :get-suggestion-value="getSuggestionValue"
-                :input-props="{id:'autosuggest__input', placeholder:'Do you feel lucky, punk?'}">
-            <div slot-scope="{suggestion}" style="display: flex; align-items: center;">
-                <img :style="{ display: 'flex', width: '25px', height: '25px', borderRadius: '15px', marginRight: '10px'}" :src="suggestion.item.avatar" />
-                <div style="{ display: 'flex', color: 'navyblue'}">{{suggestion.item.name}}</div>
-            </div>
-        </vue-autosuggest>
+    <div>
+        <div class="col-md-12">
+            <vue-autosuggest
+                    v-model="query"
+                    :suggestions="filteredOptions"
+                    @focus="focusMe"
+                    @input="onInputChange"
+                    @selected="onSelected"
+                    :get-suggestion-value="getSuggestionValue"
+                    :input-props="{id:'autosuggest__input', placeholder:'Seleccione el producto'}">
+                <div slot-scope="{suggestion}" style="display: flex; align-items: center;">
+                    <div style="{ display: 'flex', color: 'navyblue'}">{{suggestion.item.name}}</div>
+                </div>
+            </vue-autosuggest>
 
-        <button class="btn btn-info">Buscar</button>
+            <button class="btn btn-info">Buscar</button>
+        </div>
     </div>
-</div>
 </template>
 
 <script>
     import Axios from 'axios';
-    import { VueAutosuggest } from 'vue-autosuggest';
+    import {VueAutosuggest} from 'vue-autosuggest';
 
     export default {
         data() {
@@ -32,19 +30,10 @@
                 products,
                 query: "",
                 selected: "",
-                suggestions: [
-                    {
-                        data: [
-                            { id: 1, name: "Frodo", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Elijah_Wood_as_Frodo_Baggins.png/220px-Elijah_Wood_as_Frodo_Baggins.png" },
-                            { id: 2, name: "Samwise", race: "Hobbit", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/Sean_Astin_as_Samwise_Gamgee.png/200px-Sean_Astin_as_Samwise_Gamgee.png" },
-                            { id: 3, name: "Gandalf", race: "Maia", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/e/e9/Gandalf600ppx.jpg/220px-Gandalf600ppx.jpg" },
-                            { id: 4, name: "Aragorn", race: "Human", avatar: "https://upload.wikimedia.org/wikipedia/en/thumb/3/35/Aragorn300ppx.png/150px-Aragorn300ppx.png" }
-                        ]
-                    }
-                ],
+
             }
         },
-        components:{
+        components: {
             VueAutosuggest
         },
 
@@ -55,7 +44,7 @@
             filteredOptions() {
                 return [
                     {
-                        data: this.suggestions[0].data.filter(option => {
+                        data: this.products.filter(option => {
                             return option.name.toLowerCase().indexOf(this.query.toLowerCase()) > -1;
                         })
                     }
@@ -66,13 +55,12 @@
             async getProducts() {
                 let apiProducts = await Axios.get('api/get-products');
                 this.products = apiProducts.data.data;
+                console.log(this.products);
             },
 
-            clickHandler(item) {
-                // event fired when clicking on the input
-            },
             onSelected(item) {
                 this.selected = item.item;
+                console.log({'se':this.selected});
             },
             onInputChange(text) {
                 // event fired when the input changes
@@ -90,3 +78,16 @@
         }
     }
 </script>
+
+<style>
+    li {
+        margin: 0 0 0 0;
+        border-radius: 5px;
+        padding: 0.75rem 0 0.75rem 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+    li:hover {
+        cursor: pointer;
+    }
+</style>
