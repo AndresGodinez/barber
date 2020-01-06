@@ -3,10 +3,10 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Create treatment</div>
+                    <div class="card-header">Creación de tratamiento</div>
 
                     <div class="card-body">
-                        I'm an example component.
+                       <product-finder></product-finder>
                     </div>
                 </div>
             </div>
@@ -15,25 +15,12 @@
 </template>
 
 <script>
-    import Axios from 'axios';
+    import ProductFinder from './product-finder';
 
     export default {
-        data(){
-            let products = [];
-          return{
-              products
-          }  
-        },
-
-        mounted() {
-            this.getProducts()
-        },
-        methods:{
-            async getProducts(){
-                let apiProducts = await Axios.get('api/get-products');
-                this.products = apiProducts.data.data;
-            }
+        name:'create-treatment',
+        components:{
+            ProductFinder
         }
-        
     }
 </script>

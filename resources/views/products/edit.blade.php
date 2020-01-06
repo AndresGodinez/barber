@@ -1,11 +1,12 @@
 @extends('layouts.app')
-
+@include('partials.errors')
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-8 offset">
-                <form action="{{ route('products.store') }}" method="post">
+                <form action="{{ route('products.update', ['product' => $product->id ]) }}" method="post">
                     @csrf
+                    @method('PUT')
                     <div class="form-group">
                         <label for="name">Nombre</label>
                         <input type="text"
