@@ -8,14 +8,16 @@ const types = {
 const state = {
     treatment
 };
-const getters = {};
+const getters = {
+    getProductsTreatment: (state) => state.treatment.getProducts(),
+};
 const actions = {
-    addProductToTreatment({commit, state, dispatch}, product){
-        commit(types.ADD_PRODUCT_TO_TREATMENT)
-    }
+    addProductToTreatment({commit, state, dispatch}, product) {
+        commit(types.ADD_PRODUCT_TO_TREATMENT, product)
+    },
 };
 const mutations = {
-    [types.ADD_PRODUCT_TO_TREATMENT](state, product){
+    [types.ADD_PRODUCT_TO_TREATMENT](state, product) {
         state.treatment.addProduct(product);
     }
 };
