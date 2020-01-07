@@ -61,6 +61,7 @@
             onSelected(item) {
                 this.selected = item.item;
                 console.log({'se':this.selected});
+                this.$store.dispatch('addProductToTreatment', this.selected);
             },
             onInputChange(text) {
                 // event fired when the input changes
