@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@include('partials.errors')
+
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-8 offset">
-                <form action="{{ route('products.update', ['product' => $product->id ]) }}" method="post">
+                <form action="{{ route('branches.update', ['branch' => $branch->id]) }}" method="post">
                     @csrf
-                    @method('PUT')
+                    @method('put')
                     <div class="form-group">
                         <label for="name">Nombre</label>
                         <input type="text"
@@ -14,39 +14,39 @@
                                id="name"
                                class="form-control"
                                placeholder="Nombre"
-                               value="{{$product->name}}"
+                               value="{{$branch->name}}"
                                required>
                     </div>
 
                     <div class="form-group">
-                        <label for="code">Código Interno</label>
+                        <label for="telephone">Teléfono</label>
                         <input type="text"
-                               name="code"
-                               id="code"
+                               name="telephone"
+                               id="telephone"
                                class="form-control"
-                               placeholder="Código"
-                               value="{{$product->code}}"
+                               placeholder="(81)..."
+                               value="{{$branch->telephone}}"
                                required>
                     </div>
                     <div class="form-group">
-                        <label for="cost">Costo</label>
+                        <label for="address">Dirección</label>
                         <input type="text"
-                               name="cost"
-                               id="cost"
+                               name="address"
+                               id="address"
                                class="form-control"
                                placeholder="$0.00"
-                               value="{{$product->cost}}"
+                               value="{{$branch->address}}"
                                required>
                     </div>
 
                     <div class="form-group">
-                        <label for="sale_price">Precio Venta</label>
+                        <label for="rfc">RFC</label>
                         <input type="text"
-                               name="sale_price"
-                               id="sale_price"
+                               name="rfc"
+                               id="rfc"
                                class="form-control"
                                placeholder="$0.00"
-                               value="{{$product->sale_price}}"
+                               value="{{$branch->rfc}}"
                                required>
                     </div>
 

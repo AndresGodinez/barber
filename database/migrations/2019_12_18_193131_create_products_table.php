@@ -19,6 +19,13 @@ class CreateProductsTable extends Migration
             $table->string('code')->unique();
             $table->float('cost');
             $table->float('sale_price');
+
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories');
+
+            $table->unsignedBigInteger('supplier_id');
+            $table->foreign('supplier_id')->references('id')->on('suppliers');
+
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
         });
