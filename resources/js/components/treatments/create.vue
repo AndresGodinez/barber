@@ -5,10 +5,12 @@
                 <div class="card">
                     <div class="card-header">Creación de tratamiento</div>
                     <div class="card-body">
-                       <product-finder></product-finder>
-                        <treatment-detail></treatment-detail>
+                        <product-finder></product-finder>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-4">
+                <treatment-detail></treatment-detail>
             </div>
         </div>
         <TreatmentDescription></TreatmentDescription>
@@ -21,8 +23,8 @@
     import TreatmentDetail from './treatment-detail';
 
     export default {
-        name:'create-treatment',
-        components:{
+        name: 'create-treatment',
+        components: {
             ProductFinder,
             TreatmentDescription,
             TreatmentDetail

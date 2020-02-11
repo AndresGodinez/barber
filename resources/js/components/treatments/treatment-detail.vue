@@ -1,21 +1,17 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="car-header">
-                        Detalles de Tratamiento
-                    </div>
-                    <div class="card-body">
-                        <p>Costo</p>
-                        <p>2323.443</p>
-                        <p>precio</p>
-                        <p>2323</p>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn btn-info" @click="saveTreatment">Creat</button>
-                    </div>
-                </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                Detalles de Tratamiento
+            </div>
+            <div class="card-body">
+                <p>Costo</p>
+                <p>2323.443</p>
+                <p>precio</p>
+                <p>2323</p>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-info" @click="saveTreatment">Crear</button>
             </div>
         </div>
     </div>
@@ -27,8 +23,8 @@
             return {}
         },
         name: "treatment-detail",
-        methods:{
-            saveTreatment(){
+        methods: {
+            saveTreatment() {
                 console.log('saveData');
             }
         }
