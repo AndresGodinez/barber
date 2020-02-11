@@ -2,13 +2,13 @@
     <div>
         <div class="col-md-12">
             <vue-autosuggest
-                    v-model="query"
-                    :suggestions="filteredOptions"
-                    @focus="focusMe"
-                    @input="onInputChange"
-                    @selected="onSelected"
-                    :get-suggestion-value="getSuggestionValue"
-                    :input-props="{id:'autosuggest__input', placeholder:'Seleccione el producto'}">
+                v-model="query"
+                :suggestions="filteredOptions"
+                @focus="focusMe"
+                @input="onInputChange"
+                @selected="onSelected"
+                :get-suggestion-value="getSuggestionValue"
+                :input-props="{id:'autosuggest__input', placeholder:'Seleccione el producto'}">
                 <div slot-scope="{suggestion}" style="display: flex; align-items: center;">
                     <div style="{ display: 'flex', color: 'navyblue'}">{{suggestion.item.name}}</div>
                 </div>
@@ -60,7 +60,7 @@
 
             onSelected(item) {
                 this.selected = item.item;
-                console.log({'se':this.selected});
+                console.log({'se': this.selected});
                 this.$store.dispatch('addProductToTreatment', this.selected);
             },
             onInputChange(text) {
@@ -88,6 +88,7 @@
         display: flex;
         align-items: center;
     }
+
     li:hover {
         cursor: pointer;
     }
