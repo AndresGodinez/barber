@@ -5,7 +5,7 @@
                 <div class="card">
                     <div class="card-header">Creación de tratamiento</div>
                     <div class="card-body">
-                        <product-fi nder></product-finder>
+                        <product-finder></product-finder>
                     </div>
                 </div>
             </div>

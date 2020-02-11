@@ -20,6 +20,11 @@ class CreateProductsTable extends Migration
             $table->float('cost');
             $table->float('sale_price');
 
+            $table->tinyInteger('can_be_partial');
+            $table->tinyInteger('it_is_bought_by_box');
+            $table->integer('pieces_per_box')->default(1);
+            $table->integer('measure')->default(1);
+
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
 

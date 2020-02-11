@@ -33,7 +33,12 @@ class ProductRequest extends FormRequest
                 'required',
                 Rule::unique('products', 'code')->ignore($product)
             ],
+            
             'sale_price' => 'required|numeric',
+            'can_be_partial' => 'required',
+            'it_is_bought_by_box' => 'required',
+            'category_id' => 'required',
+            'supplier_id' => 'required'
         ];
     }
 }

@@ -37,6 +37,12 @@ class Product extends Model
         $this->code = $request->get('code');
         $this->cost = $request->get('cost');
         $this->sale_price = $request->get('sale_price');
+        $this->can_be_partial = $request->get('can_be_partial');
+        $this->it_is_bought_by_box = $request->get('it_is_bought_by_box');
+        $this->pieces_per_box = $request->get('pieces_per_box');
+        $this->measure = $request->get('measure');
+        $this->category_id = $request->get('category_id');
+        $this->supplier_id = $request->get('supplier_id');
         $this->save();
         return $this;
     }
@@ -47,6 +53,12 @@ class Product extends Model
         $this->code = $request->get('code');
         $this->cost = $request->get('cost');
         $this->sale_price = $request->get('sale_price');
+        $this->can_be_partial = $request->get('can_be_partial');
+        $this->it_is_bought_by_box = $request->get('it_is_bought_by_box');
+        $this->pieces_per_box = $request->get('pieces_per_box') ?? 1;
+        $this->measure = $request->get('measure') ?? 1;
+        $this->category_id = $request->get('category_id');
+        $this->supplier_id = $request->get('supplier_id');
         $this->save();
         return $this;
     }

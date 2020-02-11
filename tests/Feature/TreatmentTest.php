@@ -14,6 +14,7 @@ class TreatmentTest extends TestCase
     /** @test */
     function a_treatment_has_many_products()
     {
+        $this->markTestIncomplete();
         $products = factory(Product::class, 3)->create();
 
         $treatment = factory(Treatment::class)->create();
@@ -23,6 +24,5 @@ class TreatmentTest extends TestCase
         }
 
         $this->assertInstanceOf(Product::class, $treatment->products->first());
-
     }
 }
