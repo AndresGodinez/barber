@@ -7,6 +7,46 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * App\Product
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $code
+ * @property float $cost
+ * @property float $sale_price
+ * @property int $can_be_partial
+ * @property int $it_is_bought_by_box
+ * @property int $pieces_per_box
+ * @property int $measure
+ * @property int $category_id
+ * @property int $supplier_id
+ * @property int $active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Category $category
+ * @property-read \App\Supplier $supplier
+ * @property-read \App\Unit $unit
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product name($name = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereCanBePartial($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereItIsBoughtByBox($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereMeasure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product wherePiecesPerBox($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereSalePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereSupplierId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Product whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Product extends Model
 {
     public function unit(): BelongsTo

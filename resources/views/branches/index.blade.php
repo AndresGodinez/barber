@@ -13,6 +13,7 @@
                 <table class="table table-striped">
                     <tr>
                         <th>Id</th>
+                        <th>User</th>
                         <th>Nombre</th>
                         <th>Dirección</th>
                         <th>Teléfono</th>
@@ -22,6 +23,7 @@
                     @foreach($branches as $branch)
                         <tr>
                             <td>{{$branch->id}}</td>
+                            <td>{{$branch->user->name}}</td>
                             <td>
                                 <a href="{{route('branches.show', ['branch' => $branch->id])}}">
                                     {{$branch->name}}

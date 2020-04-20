@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Branch;
 use App\Http\Requests\BranchRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class BranchController extends Controller
@@ -13,7 +14,10 @@ class BranchController extends Controller
     {
         $name = $request->get('name');
 
-        $branches = Branch::orderBy('id', 'desc')->name($name)->paginate();
+        $branches = Branch::orderBy('id', 'desc')
+            ->ownerUser($request->user()->id)
+            ->name($name)
+            ->paginate();
 
         return view('branches.index', compact('branches'));
     }
@@ -41,7 +45,15 @@ class BranchController extends Controller
 
     public function edit(Branch $branch)
     {
-        return view('branches.edit', compact('branch'));
+        try {
+            $this->authorize('pass', $branch);
+            return view('branches.edit', compact('branch'));
+
+        } catch (AuthorizationException $e) {
+            dd([
+                'e' => $e->getMessage()
+             ]);
+        }
     }
 
 
