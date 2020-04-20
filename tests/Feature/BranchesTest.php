@@ -53,6 +53,7 @@ class BranchesTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('branches.store'), [
             'name' => $name = $this->faker->name,
+            'user_id' => $user->id,
             'address' => $address = $this->faker->address,
             'telephone' => $telephone = $this->faker->phoneNumber,
             'rfc' => $rfc = $this->faker->word . $this->faker->postcode

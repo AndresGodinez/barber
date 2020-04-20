@@ -13,6 +13,7 @@ class UsersTableSeeder extends Seeder
     {
         factory(\App\User::class)->create([
             'name' => 'Andres',
+            'username' => 'agodinez',
             'email' => 'ing.a.godienz@gmail.com',
         ]);
     }
