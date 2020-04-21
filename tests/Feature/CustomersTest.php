@@ -17,20 +17,20 @@ class CustomersTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     /** @test */
-    function an_administrator_can_create_customer()
+    function a_system_administrator_can_create_customer_and_customer_has_role_admin_customer()
     {
         $this->withoutExceptionHandling();
 
-        $this->createSystemAdminRole();
+        $this->insertRoles();
 
-        $user = factory(User::class)->create();
-        $user->assignRole('system_admin');
+        $systemAdminUser = $this->getSystemAdminUser();
+
         $type = factory(Type::class)->create([
             'name' => 'trial',
             'months' => 1,
         ]);
 
-        $response = $this->actingAs($user)->post(route('customer.store', [
+        $response = $this->actingAs($systemAdminUser)->post(route('customer.store', [
             'name' => $name = 'Test',
             'last_name' => $las_name = 'Name',
             'expiration' => $expirationDate = Carbon::now()->addMonth(),
@@ -39,7 +39,7 @@ class CustomersTest extends TestCase
             'type_id' => $type->id
         ]));
 
-        $this->assertDatabaseHas('customers',[
+        $this->assertDatabaseHas('customers', [
             'name' => $name,
             'last_name' => $las_name,
             'telephone' => $telephone,
@@ -48,25 +48,34 @@ class CustomersTest extends TestCase
             'type_id' => $type->id
         ]);
 
-        $inUserName = 'Test'.' '.$las_name;
+        $inUserName = 'Test' . ' ' . $las_name;
 
-        $this->assertDatabaseHas('users',[
-            'name' => $inUserName ,
+        $this->assertDatabaseHas('users', [
+            'name' => $inUserName,
             'userName' => 'TName',
             'email' => $email,
         ]);
 
         $response->assertRedirect(route('customers.index'));
+
+        $users = User::get();
+        $lastUser = $users->last();
+        $this->assertTrue($lastUser->hasRole('customer_admin'));
+
+    }
+
+    protected function insertRoles()
+    {
+        Role::create(['name' => 'system_admin']);
+        Role::create(['name' => 'customer_admin']);
+        Role::create(['name' => 'customer_staff']);
     }
 
     /** @test */
-    function an_administrator_can_show_customers()
+    function an_system_administrator_can_show_customers()
     {
-        $this->createSystemAdminRole();
 
-        $user = factory(User::class)->create();
-
-        $user->assignRole('system_admin');
+        $user = $this->getSystemAdminUser();
 
         $customers = factory(Customer::class, 5)->create();
 
@@ -88,7 +97,8 @@ class CustomersTest extends TestCase
 
             $response->assertSee($customer->name);
             $response->assertSee($customer->email);
-
         }
     }
+
+
 }
