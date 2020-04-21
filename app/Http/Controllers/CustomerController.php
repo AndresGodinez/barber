@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Type;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -12,16 +13,17 @@ class CustomerController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return void
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function index(Request $request)
     {
         $name = $request->get('name');
+
         $customers = Customer::orderByDesc('created_at')
             ->name($name)
             ->paginate();
 
-        response(view('Customers/index', $customers));
+        return response(view('customers/index', compact('customers')));
     }
 
     /**
@@ -31,7 +33,8 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        $types = Type::get();
+        return response(view('customers/create', compact('types')));
     }
 
     /**
