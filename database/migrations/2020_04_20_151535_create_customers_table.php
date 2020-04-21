@@ -26,6 +26,10 @@ class CreateCustomersTable extends Migration
 
             $table->date('expiration');
 
+            $table->text('comment')->nullable();
+
+            $table->tinyInteger('active')->default(1);
+
             $table->integer('branch_limit')->default(4);
             $table->integer('user_limit')->default(12);
 

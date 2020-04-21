@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Customer;
 use App\Type;
 use App\User;
+use App\Utils\StringUtils;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,9 +21,7 @@ class CustomersTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $role = Role::create([
-            'name' => 'system_admin'
-        ]);
+        $this->createSystemAdminRole();
 
         $user = factory(User::class)->create();
         $user->assignRole('system_admin');
@@ -62,6 +62,33 @@ class CustomersTest extends TestCase
     /** @test */
     function an_administrator_can_show_customers()
     {
+        $this->createSystemAdminRole();
 
+        $user = factory(User::class)->create();
+
+        $user->assignRole('system_admin');
+
+        $customers = factory(Customer::class, 5)->create();
+
+        $response = $this->actingAs($user)->get(route('customers.index'));
+
+        $response->assertViewIs('customers.index');
+
+        foreach ($customers as $customer) {
+            $this->assertDatabaseHas('customers', [
+                'name' => $customer->name,
+                'last_name' => $customer->last_name,
+                'expiration' => $customer->expiration
+            ]);
+
+            $this->assertDatabaseHas('users', [
+                'email' => $customer->email,
+                'username' => StringUtils::getUserName($customer->name, $customer->last_name),
+            ]);
+
+            $response->assertSee($customer->name);
+            $response->assertSee($customer->email);
+
+        }
     }
 }

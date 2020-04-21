@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Customer;
 use App\Type;
 use Carbon\Carbon;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 
 class CustomerController extends Controller
 {
@@ -13,7 +17,7 @@ class CustomerController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return ResponseFactory|Response
      */
     public function index(Request $request)
     {
@@ -29,7 +33,7 @@ class CustomerController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -40,8 +44,8 @@ class CustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param Request $request
+     * @return RedirectResponse|Redirector
      */
     public function store(Request $request)
     {
@@ -60,31 +64,32 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Customer  $customer
-     * @return \Illuminate\Http\Response
+     * @param Customer $customer
+     * @return ResponseFactory|Response
      */
     public function show(Customer $customer)
     {
-        //
+        return response(view('customers/show', compact($customer)));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Customer  $customer
-     * @return \Illuminate\Http\Response
+     * @param Customer $customer
+     * @return Response
      */
     public function edit(Customer $customer)
     {
-        //
+        $types = Type::get();
+        return \response(view('customer/edit', compact('customer', 'types')));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Customer  $customer
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Customer $customer
+     * @return Response
      */
     public function update(Request $request, Customer $customer)
     {
@@ -94,11 +99,14 @@ class CustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Customer  $customer
-     * @return \Illuminate\Http\Response
+     * @param Customer $customer
+     * @return Response
      */
-    public function destroy(Customer $customer)
+    public function destroy(Customer $customer, Request $request)
     {
-        //
+        $customer->active = 0;
+        $customer->$request->get('comment');
+        $customer->save();
+        return \response(redirect(route('customers.index')));
     }
 }
