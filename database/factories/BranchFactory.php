@@ -10,6 +10,9 @@ $factory->define(Branch::class, function (Faker $faker) {
         'name' => $faker->name,
         'address' => $faker->address,
         'rfc' => $faker->word . $faker->postcode,
-        'telephone' => $faker->phoneNumber
+        'telephone' => $faker->phoneNumber,
+        'customer_id' => function () {
+            return factory(\App\Customer::class)->create();
+        }
     ];
 });

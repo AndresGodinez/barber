@@ -15,7 +15,6 @@ class BranchController extends Controller
         $name = $request->get('name');
 
         $branches = Branch::orderBy('id', 'desc')
-            ->ownerUser($request->user()->id)
             ->name($name)
             ->paginate();
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddClientIdOnUsersTable extends Migration
+class AddCustomerIdOnBranchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddClientIdOnUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('customer_id')->nullable();
+        Schema::table('branches', function (Blueprint $table){
+            $table->unsignedBigInteger('customer_id')
+                ->nullable();
+
             $table->foreign('customer_id')
                 ->references('id')->on('customers');
         });
@@ -27,8 +29,6 @@ class AddClientIdOnUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('customer_id');
-        });
+        //
     }
 }

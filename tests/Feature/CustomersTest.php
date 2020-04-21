@@ -64,16 +64,10 @@ class CustomersTest extends TestCase
 
     }
 
-    protected function insertRoles()
-    {
-        Role::create(['name' => 'system_admin']);
-        Role::create(['name' => 'customer_admin']);
-        Role::create(['name' => 'customer_staff']);
-    }
-
     /** @test */
-    function an_system_administrator_can_show_customers()
+    function a_system_administrator_can_show_customers()
     {
+        $this->insertRoles();
 
         $user = $this->getSystemAdminUser();
 

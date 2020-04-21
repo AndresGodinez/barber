@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Customer;
 use App\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Spatie\Permission\Models\Role;
@@ -83,12 +84,14 @@ abstract class TestCase extends BaseTestCase
         $this->systemAdminUser->assignRole('system_admin');
     }
 
-
     private function setUserAdminCustomer()
     {
         $this->userAdminCustomer = factory(User::class)->create([
             'name' => 'Customer',
-            'email' => 'customer@gmail.com'
+            'email' => 'customer@gmail.com',
+            'customer_id' => function () {
+                return factory(Customer::class);
+            }
         ]);
 
         Role::firstOrCreate([
@@ -111,4 +114,12 @@ abstract class TestCase extends BaseTestCase
 
         $this->userStaffCustomer->assignRole('customer_staff');
     }
+
+    public function insertRoles()
+    {
+        Role::create(['name' => 'system_admin']);
+        Role::create(['name' => 'customer_admin']);
+        Role::create(['name' => 'customer_staff']);
+    }
+
 }

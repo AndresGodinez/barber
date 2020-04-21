@@ -21,7 +21,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('clients', 'ClientController');
 Route::resource('units', 'UnitController');
 Route::resource('products', 'ProductController');
-Route::resource('branches', 'BranchController');
 
 Route::get('create-treatment', 'TreatmentController@create');
 Route::get('treatments', 'TreatmentController@index');

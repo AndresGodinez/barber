@@ -23,7 +23,7 @@
                     @foreach($branches as $branch)
                         <tr>
                             <td>{{$branch->id}}</td>
-                            <td>{{$branch->user->name}}</td>
+                            <td>{{$branch->customer->name ?? 'no es cliente'}}</td>
                             <td>
                                 <a href="{{route('branches.show', ['branch' => $branch->id])}}">
                                     {{$branch->name}}

@@ -41,16 +41,9 @@ class Branch extends Model
 
     protected $guarded = [];
 
-    public function user():BelongsTo
+    public function customer():BelongsTo
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function scopeOwnerUser(Builder $query, int $userId = null): Builder
-    {
-        return !is_null($userId)
-            ? $query->where('user_id', $userId)
-            : $query;
+        return $this->belongsTo(Customer::class);
     }
 
     public function scopeName(Builder $query, string $name = null): Builder

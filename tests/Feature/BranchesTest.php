@@ -12,16 +12,37 @@ class BranchesTest extends TestCase
     use RefreshDatabase, WithFaker;
 
     /** @test */
-    public function user_can_see_index_branches()
+    public function customer_only_can_see_the_branches_that_belong_to_him()
     {
         $this->withoutExceptionHandling();
 
-        $branches = factory(Branch::class)->times(2)->create();
+        $this->insertRoles();
 
-        $user = $this->getDefaultUser();
-        $response = $this->actingAs($user)->get(route('branches.index'));
+        $anotherBranches = factory(Branch::class)->times(2)->create();
+
+//        dd(Branch::count()); 2
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        dd($adminCustomerUser);
+
+        $branches = factory(Branch::class)->times(2)->create([
+            'customer_id' => $adminCustomerUser->id
+        ]);
+
+//        dd(Branch::count()); 4
+
+
+        $response = $this->actingAs($adminCustomerUser)->get(route('branches.index'));
         $response->assertStatus(200);
         $response->assertViewIs('branches.index');
+
+        foreach ($anotherBranches as $branch) {
+            $response->assertDontSee($branch->name);
+            $response->assertDontSee($branch->telephone);
+            $response->assertDontSee($branch->address);
+            $response->assertDontSee($branch->rfc);
+        }
 
         foreach ($branches as $branch) {
             $response->assertSee($branch->name);
@@ -103,7 +124,7 @@ class BranchesTest extends TestCase
 
         $response = $this->actingAs($user)->put(
             route('branches.update', ['branch' => $branch->id]), [
-                'name' => $name = $this->faker->name.'3',
+                'name' => $name = $this->faker->name . '3',
                 'address' => $branch->address,
                 'telephone' => $branch->telephone,
                 'rfc' => $branch->rfc
