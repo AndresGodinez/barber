@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Client whereTelephone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Client whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $number_services
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Client whereNumberServices($value)
  */
 class Client extends Model
 {

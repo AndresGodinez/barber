@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Http\Requests\BranchRequest;
+use App\Traits\MultiTenantTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +37,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Branch extends Model
 {
+    use MultiTenantTable;
+
     protected $guarded = [];
 
     public function user():BelongsTo

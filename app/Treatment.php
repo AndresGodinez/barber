@@ -20,6 +20,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Treatment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Treatment whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $name
+ * @property int $branch_id
+ * @property float $cost
+ * @property float $price
+ * @property int $user_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Treatment whereBranchId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Treatment whereCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Treatment whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Treatment wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Treatment whereUserId($value)
  */
 class Treatment extends Model
 {
