@@ -280,4 +280,67 @@ class BranchesTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+
+    /** @test */
+    function admin_customer_user_can_deactivate_branch_is_it_belongs_to_him()
+    {
+        $this->insertRoles();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $this->withoutExceptionHandling();
+
+        $branch = factory(Branch::class)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
+        $this->assertDatabaseHas('branches', [
+            'name' => $branch->name,
+            'customer_id' => $adminCustomerUser->customer->id,
+            'active' => 1
+        ]);
+
+        $response = $this->actingAs($adminCustomerUser)->delete(
+            route('branches.destroy', ['branch' => $branch->id]));
+
+        $this->assertDatabaseHas('branches', [
+            'name' => $branch->name,
+            'customer_id' => $adminCustomerUser->customer->id,
+            'active' => 0
+        ]);
+
+        $response->assertStatus(302);
+
+        $response->assertRedirect(route('branches.index'));
+    }
+
+
+    /** @test */
+    function admin_customer_user_can_not_deactivate_branch_it_is_not_belongs_to_him()
+    {
+        $this->insertRoles();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $this->withoutExceptionHandling();
+
+        $branch = factory(Branch::class)->create();
+
+        $this->assertDatabaseHas('branches', [
+            'name' => $branch->name,
+            'active' => 1
+        ]);
+
+        $response = $this->actingAs($adminCustomerUser)->delete(
+            route('branches.destroy', ['branch' => $branch->id]));
+
+        $this->assertDatabaseMissing('branches', [
+            'name' => $branch->name,
+            'active' => 0
+        ]);
+
+        $response->assertStatus(403);
+
+    }
 }

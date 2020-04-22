@@ -20,6 +20,8 @@ class CreateBranchesTable extends Migration
             $table->string('address');
             $table->string('telephone');
             $table->string('rfc');
+            $table->tinyInteger('active')->default(1);
+
             $table->timestamps();
         });
     }

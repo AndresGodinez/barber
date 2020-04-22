@@ -76,5 +76,20 @@ class BranchController extends Controller
         }
     }
 
+    public function destroy(Branch $branch)
+    {
+        try {
+            $this->authorize('pass', $branch);
+            $branch->update([
+                'active' => 0
+            ]);
+
+            return redirect(route('branches.index'));
+
+        } catch (AuthorizationException $e) {
+            return response($e->getMessage(), 403);
+        }
+    }
+
 
 }
