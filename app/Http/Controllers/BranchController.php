@@ -15,6 +15,7 @@ class BranchController extends Controller
         $name = $request->get('name');
 
         $branches = Branch::orderBy('id', 'desc')
+            ->onlyBelongsToCustomer($request->user())
             ->name($name)
             ->paginate();
 
@@ -49,17 +50,24 @@ class BranchController extends Controller
             return view('branches.edit', compact('branch'));
 
         } catch (AuthorizationException $e) {
-            dd([
-                'e' => $e->getMessage()
-             ]);
+            return response('Unauthorized action.', 403);
+
         }
+
+
     }
 
 
     public function update(BranchRequest $request, Branch $branch)
     {
-        $branch->updateBranch($request);
-        return redirect(route('branches.index'));
+        try {
+            $this->authorize('pass', $branch);
+            $branch->updateBranch($request);
+            return redirect(route('branches.index'));
+
+        } catch (AuthorizationException $e) {
+            return response($e->getMessage(), 403);
+        }
     }
 
 

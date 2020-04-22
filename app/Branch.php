@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Http\Requests\BranchRequest;
-use App\Traits\MultiTenantTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,13 +36,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Branch extends Model
 {
-    use MultiTenantTable;
-
     protected $guarded = [];
 
     public function customer():BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function scopeOnlyBelongsToCustomer(Builder $query, User $user)
+    {
+        return $user->isCustomer()
+            ? $query->where('customer_id', $user->customer->id)
+            : $query;
     }
 
     public function scopeName(Builder $query, string $name = null): Builder
@@ -55,15 +59,14 @@ class Branch extends Model
 
     public function createNewBranch(BranchRequest $request): Branch
     {
-        $branch = $this->create([
+        return $this->create([
             'name' => $request->get('name'),
             'address' => $request->get('address'),
-            'user_id' => $request->user()->id,
+            'customer_id' => $request->user()->customer->id,
             'rfc' => $request->get('rfc'),
             'telephone' => $request->get('telephone')
         ]);
 
-        return $branch;
     }
 
     public function updateBranch(BranchRequest $request): Branch

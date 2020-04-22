@@ -22,6 +22,9 @@ class BranchPolicy
 
     public function pass(User $user, Branch $branch)
     {
-        return $user->id == $branch->user_id;
+
+        return $user->isCustomer()
+            ? $user->customer->id === intval($branch->customer_id)
+            : $branch;
     }
 }

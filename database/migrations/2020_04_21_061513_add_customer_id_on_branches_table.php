@@ -14,6 +14,7 @@ class AddCustomerIdOnBranchesTable extends Migration
     public function up()
     {
         Schema::table('branches', function (Blueprint $table){
+
             $table->unsignedBigInteger('customer_id')
                 ->nullable();
 

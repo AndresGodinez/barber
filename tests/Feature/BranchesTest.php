@@ -20,18 +20,11 @@ class BranchesTest extends TestCase
 
         $anotherBranches = factory(Branch::class)->times(2)->create();
 
-//        dd(Branch::count()); 2
-
         $adminCustomerUser = $this->getUserAdminCustomer();
 
-        dd($adminCustomerUser);
-
         $branches = factory(Branch::class)->times(2)->create([
-            'customer_id' => $adminCustomerUser->id
+            'customer_id' => $adminCustomerUser->customer->id
         ]);
-
-//        dd(Branch::count()); 4
-
 
         $response = $this->actingAs($adminCustomerUser)->get(route('branches.index'));
         $response->assertStatus(200);
@@ -53,14 +46,19 @@ class BranchesTest extends TestCase
     }
 
     /** @test */
-    function user_can_see_form_to_create_branch()
+    function admin_customer_user_can_see_form_to_create_branch()
     {
         $this->withoutExceptionHandling();
 
-        $user = $this->getDefaultUser();
+        $this->insertRoles();
 
-        $response = $this->actingAs($user)->get(route('branches.create'));
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $response = $this->actingAs($adminCustomerUser)
+            ->get(route('branches.create'));
+
         $response->assertViewIs('branches.create');
+
         $response->assertSee('Nombre');
         $response->assertSee('Dirección');
         $response->assertSee('Teléfono');
@@ -68,13 +66,32 @@ class BranchesTest extends TestCase
         $response->assertSee('Guardar');
     }
 
-    public function user_can_store_new_branch()
+    /** @test */
+    function customer_staff_user_can_not_see_form_to_create_branch()
     {
-        $user = $this->getDefaultUser();
+        $this->withoutExceptionHandling();
 
-        $response = $this->actingAs($user)->post(route('branches.store'), [
+        $this->insertRoles();
+
+        $staffUser = $this->getUserStaffCustomer();
+
+        $response = $this->actingAs($staffUser)
+            ->get(route('branches.create'));
+
+        $response->assertRedirect(route('home'));
+
+    }
+
+    /** @test */
+    public function customer_admin_user_can_store_new_branch()
+    {
+        $this->insertRoles();
+
+        $customerAdminUser = $this->getUserAdminCustomer();
+
+        $response = $this->actingAs($customerAdminUser)
+            ->post(route('branches.store'), [
             'name' => $name = $this->faker->name,
-            'user_id' => $user->id,
             'address' => $address = $this->faker->address,
             'telephone' => $telephone = $this->faker->phoneNumber,
             'rfc' => $rfc = $this->faker->word . $this->faker->postcode
@@ -84,23 +101,58 @@ class BranchesTest extends TestCase
             'name' => $name,
             'address' => $address,
             'telephone' => $telephone,
-            'rfc' => $rfc
+            'rfc' => $rfc,
+            'customer_id' => $customerAdminUser->customer->id
         ]);
 
         $response->assertStatus(302);
         $response->assertRedirect(route('branches.index'));
     }
 
+
     /** @test */
-    function user_can_see_the_form_to_edit_branch()
+    public function customer_staff_user_can_not_store_new_branch()
     {
-        $user = $this->getDefaultUser();
+        $this->insertRoles();
+
+        $customerStaffUser = $this->getUserStaffCustomer();
+
+        $response = $this->actingAs($customerStaffUser)
+            ->post(route('branches.store'), [
+                'name' => $name = $this->faker->name,
+                'address' => $address = $this->faker->address,
+                'telephone' => $telephone = $this->faker->phoneNumber,
+                'rfc' => $rfc = $this->faker->word . $this->faker->postcode
+            ]);
+
+        $this->assertDatabaseMissing('branches', [
+            'name' => $name,
+            'address' => $address,
+            'telephone' => $telephone,
+            'rfc' => $rfc,
+            'customer_id' => $customerStaffUser->customer->id
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('home'));
+    }
+
+    /** @test */
+    function customer_admin_user_can_see_the_form_to_edit_branch()
+    {
+        $this->insertRoles();
+
+        $customerAdminUser = $this->getUserAdminCustomer();
 
         $this->withoutExceptionHandling();
 
-        $branch = factory(Branch::class)->create();
+        $branch = factory(Branch::class)->create([
+            'customer_id' => $customerAdminUser->customer->id
+        ]);
 
-        $response = $this->actingAs($user)->get(route('branches.edit', ['branch' => $branch->id]));
+        $response = $this->actingAs($customerAdminUser)
+            ->get(route('branches.edit', ['branch' => $branch->id]));
+
         $response->assertViewIs('branches.edit');
         $response->assertSee('Nombre');
         $response->assertSee($branch->name);
@@ -114,15 +166,36 @@ class BranchesTest extends TestCase
     }
 
     /** @test */
-    function user_can_edit_branch()
+    function customer_admin_user_can_not_edit_branch_doesnt_belongs_to_him()
     {
-        $user = $this->getDefaultUser();
+        $this->insertRoles();
+
+        $customerAdminUser = $this->getUserAdminCustomer();
 
         $this->withoutExceptionHandling();
 
         $branch = factory(Branch::class)->create();
 
-        $response = $this->actingAs($user)->put(
+        $response = $this->actingAs($customerAdminUser)
+            ->get(route('branches.edit', ['branch' => $branch->id]));
+
+        $response->assertStatus(403);
+
+    }
+
+    /** @test */
+    function customer_admin_user_can_edit_branch_it_is_belongs_to_him()
+    {
+        $this->insertRoles();
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $this->withoutExceptionHandling();
+
+        $branch = factory(Branch::class)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
+        $response = $this->actingAs($adminCustomerUser)->put(
             route('branches.update', ['branch' => $branch->id]), [
                 'name' => $name = $this->faker->name . '3',
                 'address' => $branch->address,
@@ -141,6 +214,33 @@ class BranchesTest extends TestCase
         $response->assertStatus(302);
 
         $response->assertRedirect(route('branches.index'));
+    }
+
+    /** @test */
+    function customer_admin_user_can_not_edit_branch_it_is_doesnt_belongs_to_him()
+    {
+        $this->insertRoles();
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $this->withoutExceptionHandling();
+
+        $branch = factory(Branch::class)->create();
+
+        $response = $this->actingAs($adminCustomerUser)->put(
+            route('branches.update', ['branch' => $branch->id]), [
+                'name' => $name = $this->faker->name . '3',
+                'address' => $branch->address,
+                'telephone' => $branch->telephone,
+                'rfc' => $branch->rfc
+            ]
+        );
+
+        $this->assertDatabaseMissing('branches', [
+            'name' => $name,
+        ]);
+
+        $response->assertStatus(403);
+
     }
 
     /** @test */

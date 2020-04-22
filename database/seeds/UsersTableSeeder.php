@@ -19,9 +19,12 @@ class UsersTableSeeder extends Seeder
         ]);
 
         factory(\App\User::class)->create([
-            'name' => 'Customer',
+            'name' => 'CustomerAdmin',
             'username' => 'customer',
             'email' => 'customer@gmail.com',
+            'customer_id' => function(){
+                return factory(\App\Customer::class)->create();
+            }
         ]);
     }
 }

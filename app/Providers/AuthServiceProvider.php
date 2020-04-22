@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Branch;
+use App\Policies\BranchPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-         'App\Branch' => 'App\Policies\BranchPolicy',
+         Branch::class => BranchPolicy::class
     ];
 
     /**
@@ -25,6 +27,5 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
     }
 }
