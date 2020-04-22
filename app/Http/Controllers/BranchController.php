@@ -39,7 +39,13 @@ class BranchController extends Controller
 
     public function show(Branch $branch)
     {
-        return view('branches.show', compact('branch'));
+        try {
+            $this->authorize('pass', $branch);
+            return view('branches.show', compact('branch'));
+
+        } catch (AuthorizationException $e) {
+            return response($e->getMessage(), 403);
+        }
     }
 
 

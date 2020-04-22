@@ -244,21 +244,40 @@ class BranchesTest extends TestCase
     }
 
     /** @test */
-    function user_can_show_details_branch()
+    function admin_customer_user_can_show_details_branch_it_is_belongs_to_him()
     {
-        $user = $this->getDefaultUser();
+        $this->insertRoles();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
 
         $this->withoutExceptionHandling();
 
-        $branch = factory(Branch::class)->create();
+        $branch = factory(Branch::class)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
 
-        $response = $this->actingAs($user)->get(
+        $response = $this->actingAs($adminCustomerUser)->get(
             route('branches.show', ['branch' => $branch->id]));
 
         $response->assertViewIs('branches.show');
 
         $response->assertStatus(200);
+    }
 
+    /** @test */
+    function admin_customer_user_can_not_show_details_branch_is_not_belongs_to_him()
+    {
+        $this->insertRoles();
 
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $this->withoutExceptionHandling();
+
+        $branch = factory(Branch::class)->create();
+
+        $response = $this->actingAs($adminCustomerUser)->get(
+            route('branches.show', ['branch' => $branch->id]));
+
+        $response->assertStatus(403);
     }
 }
