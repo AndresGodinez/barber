@@ -51,4 +51,9 @@ class Customer extends Model
             ? $query->where('name', 'like', "%$name%")
             : $query;
     }
+
+    public function getNumberBranchesAvailable()
+    {
+        return $this->branch_limit - $this->branches->count();
+    }
 }

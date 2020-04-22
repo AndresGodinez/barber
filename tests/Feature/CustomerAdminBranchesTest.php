@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class BranchesTest extends TestCase
+class CustomerAdminBranchesTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
@@ -281,7 +281,6 @@ class BranchesTest extends TestCase
         $response->assertStatus(403);
     }
 
-
     /** @test */
     function admin_customer_user_can_deactivate_branch_is_it_belongs_to_him()
     {
@@ -315,7 +314,6 @@ class BranchesTest extends TestCase
         $response->assertRedirect(route('branches.index'));
     }
 
-
     /** @test */
     function admin_customer_user_can_not_deactivate_branch_it_is_not_belongs_to_him()
     {
@@ -343,4 +341,32 @@ class BranchesTest extends TestCase
         $response->assertStatus(403);
 
     }
+
+    /** @test */
+    function admin_customer_user_check_the_branch_limit()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->insertRoles();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $this->withoutExceptionHandling();
+
+        $userAdminLimitBranches = $adminCustomerUser->customer->branch_limit;
+
+        $branchesCustomer = factory(Branch::class)->times($userAdminLimitBranches)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
+        $branchesOnDb = Branch::where('customer_id', $adminCustomerUser->customer->id)->get();
+
+        $this->assertEquals($branchesCustomer->count(), $branchesOnDb->count());
+
+        $response = $this->actingAs($adminCustomerUser)
+            ->get(route('branches.create'));
+
+        $response->assertRedirect(route('branches.index'));
+    }
+
 }

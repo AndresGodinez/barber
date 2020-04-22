@@ -2,12 +2,12 @@
 
 Route::middleware(['auth', 'onlyCustomerAdmin'])->group(function () {
 
-    Route::get('branches/create', 'BranchController@index')
+    Route::get('branches', 'BranchController@index')
         ->name('branches.index');
 
-    Route::get('branches', 'BranchController@create')
+    Route::get('branches/create', 'BranchController@create')
         ->name('branches.create')
-        ->middleware('onlyCustomerAdmin');
+        ->middleware('checkLimitBranchesMiddleware');;
 
     Route::post('branches', 'BranchController@store')
         ->name('branches.store')
