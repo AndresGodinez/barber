@@ -52,7 +52,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'username'
+        'name', 'email', 'password', 'username', 'customer_id', 'staff_id'
     ];
 
     /**
@@ -78,8 +78,13 @@ class User extends Authenticatable
         return $this->belongsTo(Customer::class);
     }
 
+    public function staff():BelongsTo
+    {
+        return $this->belongsTo(Staff::class);
+    }
+
     public function isCustomer():bool
     {
-        return !is_null($this->customer_id);
+        return !is_null($this->customer_id) && is_null($this->staff_id);
     }
 }
