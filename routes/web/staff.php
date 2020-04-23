@@ -15,7 +15,7 @@ Route::middleware(['auth', 'onlyCustomerAdmin'])->group(function () {
     Route::get('staff/{staff}/edit', 'StaffController@edit')
         ->name('staff.edit');
 
-    Route::get('staff/{branch}', 'StaffController@show')
+    Route::get('staff/{staff}', 'StaffController@show')
         ->name('staff.show');
 
     Route::put('staff/{branch}', 'StaffController@update')

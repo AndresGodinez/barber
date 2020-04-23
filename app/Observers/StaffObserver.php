@@ -21,7 +21,7 @@ class StaffObserver
             'name' => $staff->name,
             'email' => $staff->email,
             'password' => \Hash::make('password'),
-            'customer_id' => auth()->user()->customer->id,
+            'customer_id' => $staff->customer_id,
             'staff_id' => $staff->id
         ]);
 

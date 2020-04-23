@@ -13,7 +13,7 @@ class CustomerAdminStaffTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    function a_customer_admin_can_create_user_staff()
+    function a_customer_admin_user_can_create_user_staff()
     {
         $this->insertRoles();
 
@@ -51,5 +51,33 @@ class CustomerAdminStaffTest extends TestCase
 
         $this->assertTrue($lastUserStaff->hasRole(['customer_staff']));
 
+    }
+
+    /** @test */
+    function a_customer_admin_user_can_see_only_staff_belongs_to_him()
+    {
+        $this->insertRoles();
+
+        $this->withoutExceptionHandling();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $staffDoNotBelongsToAdminUser = factory(Staff::class)->times(4)->create();
+
+        $staffBelongsToAdminUser = factory(Staff::class)->times(4)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
+        $response = $this->actingAs($adminCustomerUser)->get(route('staff.index'));
+
+        foreach ($staffDoNotBelongsToAdminUser as $userDontBelongToUser) {
+            $response->assertDontSee($userDontBelongToUser->name);
+            $response->assertDontSee($userDontBelongToUser->username);
+        }
+
+        foreach ($staffBelongsToAdminUser as $userBelongToUser) {
+            $response->assertSee($userBelongToUser->name);
+            $response->assertSee($userBelongToUser->username);
+        }
     }
 }

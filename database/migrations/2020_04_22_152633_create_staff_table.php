@@ -18,7 +18,15 @@ class CreateStaffTable extends Migration
             $table->string('name');
             $table->string('username');
             $table->string('email');
+
             $table->unsignedBigInteger('customer_id');
+            $table->foreign('customer_id')
+                ->references('id')->on('customers');
+
+            $table->unsignedBigInteger('branch_id');
+            $table->foreign('branch_id')
+                ->references('id')->on('branches');
+
             $table->float('commission_percent');
             $table->timestamps();
         });

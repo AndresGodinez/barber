@@ -14,7 +14,7 @@ class BranchController extends Controller
     {
         $name = $request->get('name');
 
-        $branches = Branch::orderBy('id', 'desc')
+        $branches = Branch::orderByDesc('id')
             ->onlyBelongsToCustomer($request->user())
             ->name($name)
             ->paginate();

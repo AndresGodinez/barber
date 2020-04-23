@@ -6,6 +6,7 @@ use App\Http\Requests\BranchRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Branch
@@ -41,6 +42,11 @@ class Branch extends Model
     public function customer():BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function staff():HasMany
+    {
+        return $this->hasMany(Staff::class);
     }
 
     public function scopeOnlyBelongsToCustomer(Builder $query, User $user)

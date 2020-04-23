@@ -12,9 +12,16 @@ class StaffController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $name = $request->get('name');
+
+        $staff = Staff::orderByDesc('id')
+            ->name($name)
+            ->onlyBelongsToCustomer($request->user())
+            ->paginate();
+
+        return response(view('staff.index', compact('staff')));
     }
 
     /**
