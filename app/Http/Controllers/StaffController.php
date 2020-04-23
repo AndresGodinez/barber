@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Staff;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class StaffController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -27,7 +30,7 @@ class StaffController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -38,7 +41,7 @@ class StaffController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -56,19 +59,21 @@ class StaffController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Staff  $staff
-     * @return \Illuminate\Http\Response
+     * @param Staff $staff
+     * @return Response
+     * @throws AuthorizationException
      */
     public function show(Staff $staff)
     {
-        //
+        $this->authorize('pass', $staff);
+        return \response(view('staff.show', compact('staff')));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Staff  $staff
-     * @return \Illuminate\Http\Response
+     * @param Staff $staff
+     * @return Response
      */
     public function edit(Staff $staff)
     {
@@ -79,8 +84,8 @@ class StaffController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Staff  $staff
-     * @return \Illuminate\Http\Response
+     * @param Staff $staff
+     * @return Response
      */
     public function update(Request $request, Staff $staff)
     {
@@ -90,8 +95,8 @@ class StaffController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Staff  $staff
-     * @return \Illuminate\Http\Response
+     * @param Staff $staff
+     * @return Response
      */
     public function destroy(Staff $staff)
     {

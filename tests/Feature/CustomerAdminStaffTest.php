@@ -80,4 +80,56 @@ class CustomerAdminStaffTest extends TestCase
             $response->assertSee($userBelongToUser->username);
         }
     }
+
+    /** @test */
+    function a_customer_admin_user_can_show_details_staff_belongs_to_him()
+    {
+        $this->insertRoles();
+
+        $this->withoutExceptionHandling();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $staffBelongsToAdminUser = factory(Staff::class)->times(4)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
+        $firstStaff = $staffBelongsToAdminUser->first();
+
+        $response = $this->actingAs($adminCustomerUser)
+            ->get(route('staff.show', [
+                'staff' => $firstStaff->id
+            ]));
+
+        $response->assertStatus(200);
+
+        $response->assertViewIs('staff.show');
+        $response->assertSee($firstStaff->name);
+        $response->assertSee($firstStaff->username);
+        $response->assertSee($firstStaff->commission);
+
+    }
+
+    /** @test */
+    function a_customer_admin_user_can_not_show_details_staff_do_not_belongs_to_him()
+    {
+        $this->insertRoles();
+
+        $this->withoutExceptionHandling();
+
+        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $staffDontBelongsToAdminUser = factory(Staff::class)->times(4)->create();
+
+        $firstStaffDonBelongToCustomerAdmin = $staffDontBelongsToAdminUser->first();
+
+        $this->actingAs($adminCustomerUser)
+            ->get(route('staff.show', [
+                'staff' => $firstStaffDonBelongToCustomerAdmin->id
+            ]));
+
+
+    }
 }
