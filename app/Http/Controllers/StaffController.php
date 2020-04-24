@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Branch;
 use App\Staff;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -40,7 +41,7 @@ class StaffController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return Response
      */
     public function store(Request $request)
@@ -74,16 +75,20 @@ class StaffController extends Controller
      *
      * @param Staff $staff
      * @return Response
+     * @throws AuthorizationException
      */
     public function edit(Staff $staff)
     {
-        //
+        $this->authorize('pass', $staff);
+        $branches = Branch::where('customer_id', \Auth::user()->customer->id)->get();
+        return \response(view('staff.edit', compact('staff', 'branches')));
+
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @param Staff $staff
      * @return Response
      */

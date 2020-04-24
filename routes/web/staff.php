@@ -18,10 +18,10 @@ Route::middleware(['auth', 'onlyCustomerAdmin'])->group(function () {
     Route::get('staff/{staff}', 'StaffController@show')
         ->name('staff.show');
 
-    Route::put('staff/{branch}', 'StaffController@update')
+    Route::put('staff/{staff}', 'StaffController@update')
         ->name('staff.update');
 
-    Route::delete('staff/{branch}', 'StaffController@destroy')
+    Route::delete('staff/{staff}', 'StaffController@destroy')
         ->name('staff.destroy');
 
 });

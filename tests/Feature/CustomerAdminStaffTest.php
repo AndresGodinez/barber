@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Branch;
 use App\Staff;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -129,7 +130,62 @@ class CustomerAdminStaffTest extends TestCase
             ->get(route('staff.show', [
                 'staff' => $firstStaffDonBelongToCustomerAdmin->id
             ]));
+    }
 
 
+    /** @test */
+    function a_customer_admin_user_can_show_edit_form_staff_belongs_to_him()
+    {
+        $this->insertRoles();
+
+        $this->withoutExceptionHandling();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $branch = factory(Branch::class)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
+        $staffBelongsToAdminUser = factory(Staff::class)->times(4)->create([
+            'customer_id' => $adminCustomerUser->customer->id,
+            'branch_id' => $branch->id
+        ]);
+
+        $firstStaff = $staffBelongsToAdminUser->first();
+
+        $response = $this->actingAs($adminCustomerUser)
+            ->get(route('staff.edit', [
+                'staff' => $firstStaff->id
+            ]));
+
+        $response->assertStatus(200);
+
+        $response->assertViewIs('staff.edit');
+        $response->assertSee($firstStaff->name);
+        $response->assertSee($firstStaff->username);
+        $response->assertSee($firstStaff->branch->name);
+        $response->assertSee($firstStaff->commission);
+
+    }
+
+    /** @test */
+    function a_customer_admin_user_can_not_show_edit_form_staff_belongs_to_him()
+    {
+        $this->insertRoles();
+
+        $this->withoutExceptionHandling();
+
+        $this->expectException(\Illuminate\Auth\Access\AuthorizationException::class);
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $staffDontBelongsToAdminUser = factory(Staff::class)->times(4)->create();
+
+        $firstStaffDonBelongToCustomerAdmin = $staffDontBelongsToAdminUser->first();
+
+        $this->actingAs($adminCustomerUser)
+            ->get(route('staff.edit', [
+                'staff' => $firstStaffDonBelongToCustomerAdmin->id
+            ]));
     }
 }
