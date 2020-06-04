@@ -25,8 +25,8 @@ class StaffStoreRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'username' => 'required',
-            'email' => 'required',
+            'username' => 'required|unique:users',
+            'email' => 'required|unique:users',
             'customer_id' => 'required',
             'commission_percent' => 'required',
             'branch_id' => 'required',

@@ -22,12 +22,17 @@ class CustomerAdminStaffTest extends TestCase
 
         $adminCustomerUser = $this->getUserAdminCustomer();
 
+        $branch = factory(Branch::class)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
         $this->actingAs($adminCustomerUser)->post('staff', [
             'name' => $name = 'Staff Name',
             'username' => $username = 'User Name',
             'customer_id' => $customer_id = $adminCustomerUser->customer->id,
             'commission_percent' => $commission_percent = 20,
             'email' => $emailStaff = 'staffTest@email.com',
+            'branch_id' => $branch->id
         ]);
 
         $this->assertDatabaseHas('staff', [
@@ -51,6 +56,64 @@ class CustomerAdminStaffTest extends TestCase
         $lastUserStaff = User::get()->last();
 
         $this->assertTrue($lastUserStaff->hasRole(['customer_staff']));
+
+    }
+
+    /** @test */
+    function a_customer_admin_user_can_not_create_user_staff_when_already_used()
+    {
+        $this->insertRoles();
+
+        $adminCustomerUser = $this->getUserAdminCustomer();
+
+        $branch = factory(Branch::class)->create([
+            'customer_id' => $adminCustomerUser->customer->id
+        ]);
+
+        $this->actingAs($adminCustomerUser)->post('staff', [
+            'name' => $name = 'Staff Name',
+            'username' => $username = 'User Name',
+            'customer_id' => $customer_id = $adminCustomerUser->customer->id,
+            'commission_percent' => $commission_percent = 20,
+            'email' => $emailStaff = 'staffTest@email.com',
+            'branch_id' => $branch->id
+        ]);
+
+        $this->assertDatabaseHas('staff', [
+            'name' => $name,
+            'username' => 'User Name',
+            'email' => $emailStaff,
+            'customer_id' => $customer_id,
+            'commission_percent' => $commission_percent = 20,
+        ]);
+
+        $lastStaff = Staff::get()->last();
+
+        $this->assertDatabaseHas('users', [
+            'name' => $name,
+            'username' => 'User Name',
+            'email' => $emailStaff,
+            'customer_id' => $adminCustomerUser->customer->id,
+            'staff_id' => $lastStaff->id
+        ]);
+
+        $lastUserStaff = User::get()->last();
+
+        $this->assertTrue($lastUserStaff->hasRole(['customer_staff']));
+
+        $response2 = $this->actingAs($adminCustomerUser)->post('staff', [
+            'name' => $name = 'Staff Name',
+            'username' => $username = 'User Name',
+            'customer_id' => $customer_id = $adminCustomerUser->customer->id,
+            'commission_percent' => $commission_percent = 20,
+            'email' => $emailStaff = 'staffTest@email.com',
+            'branch_id' => $branch->id
+        ]);
+
+        $response2->assertSessionHasErrors([
+            'username' => 'The username has already been taken.',
+            'email' => "The email has already been taken."
+        ]);
 
     }
 
