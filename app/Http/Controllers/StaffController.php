@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Branch;
+use App\Http\Requests\StaffStoreRequest;
 use App\Staff;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -44,14 +45,15 @@ class StaffController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(StaffStoreRequest $request)
     {
         Staff::create([
             'name' => $request->get('name'),
             'username' => $request->get('username'),
             'email' => $request->get('email'),
             'customer_id' => $request->user()->customer->id,
-            'commission_percent' => $request->get('commission_percent')
+            'commission_percent' => $request->get('commission_percent'),
+            'branch_id' => $request->get('branch_id')
         ]);
 
         return response(redirect(route('staff.index')));
