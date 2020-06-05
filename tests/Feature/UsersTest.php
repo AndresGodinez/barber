@@ -13,6 +13,8 @@ class UsersTest extends TestCase
     /** @test */
     function create_system_admin_user()
     {
+        $this->insertRoles();
+
         $user = $this->getSystemAdminUser();
 
         $this->assertTrue($user->hasRole('system_admin'));
@@ -21,6 +23,8 @@ class UsersTest extends TestCase
     /** @test */
     function create_admin_customer_user()
     {
+        $this->insertRoles();
+
         $user = $this->getUserAdminCustomer();
 
         $this->assertTrue($user->hasRole('customer_admin'));
@@ -29,6 +33,8 @@ class UsersTest extends TestCase
     /** @test */
     public function get_user_staff_customer()
     {
+        $this->insertRoles();
+
         $user = $this->getUserStaffCustomer();
 
         $this->assertTrue($user->hasRole('customer_staff'));

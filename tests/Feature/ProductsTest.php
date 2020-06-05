@@ -16,6 +16,8 @@ class ProductsTest extends TestCase
     /** @test */
     function user_can_see_index_products()
     {
+        $this->insertRoles();
+
         $this->withoutExceptionHandling();
 
         $products = factory(Product::class)->times(10)->create();
@@ -34,6 +36,8 @@ class ProductsTest extends TestCase
     function user_can_see_form_to_create_product()
     {
         $this->withoutExceptionHandling();
+
+        $this->insertRoles();
 
         $user = $this->getDefaultUser();
         $response = $this->actingAs($user)->get(route('products.create'));
@@ -56,6 +60,8 @@ class ProductsTest extends TestCase
     function user_can_see_form_to_edit_product()
     {
         $this->withoutExceptionHandling();
+
+        $this->insertRoles();
 
         $user = $this->getDefaultUser();
 
@@ -98,6 +104,7 @@ class ProductsTest extends TestCase
     function user_can_store_new_product()
     {
         $this->withoutExceptionHandling();
+        $this->insertRoles();
 
         $itIstBoughtPerBox = rand(0, 1);
         $canBePartial = rand(0, 1);
@@ -141,6 +148,8 @@ class ProductsTest extends TestCase
     /** @test */
     function user_can_update_product()
     {
+        $this->insertRoles();
+
         $this->withoutExceptionHandling();
 
         $user = $this->getDefaultUser();
@@ -177,8 +186,10 @@ class ProductsTest extends TestCase
     }
 
     /** @test */
-    function user_cant_create_a_product_with_the_same_code()
+    function user_can_not_create_a_product_with_the_same_code()
     {
+        $this->insertRoles();
+
         $user = $this->getDefaultUser();
 
         $product = factory(Product::class)->create();
@@ -198,6 +209,8 @@ class ProductsTest extends TestCase
     /** @test */
     function user_can_show_product_info()
     {
+        $this->insertRoles();
+
         $user = $this->getDefaultUser();
 
         $product = factory(Product::class)->create();

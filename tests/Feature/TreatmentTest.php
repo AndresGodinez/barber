@@ -14,7 +14,7 @@ class TreatmentTest extends TestCase
     /** @test */
     function a_treatment_has_many_products()
     {
-        $this->markTestIncomplete();
+//        $this->markTestIncomplete();
         $products = factory(Product::class, 3)->create();
 
         $treatment = factory(Treatment::class)->create();
