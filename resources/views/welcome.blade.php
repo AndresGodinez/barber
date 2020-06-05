@@ -24,7 +24,7 @@
         <div class="container">
             <div class="col-md-12">
                 <section>
-                    Precios
+                    Precios 2
                 </section>
             </div>
         </div>
