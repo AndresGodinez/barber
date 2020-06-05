@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^1.1",
         "monolog/monolog": "^2.1",
+        "phpseclib/bcmath_compat": "1.0.4",
         "spatie/laravel-permission": "^3.11"
     },
     "require-dev": {
