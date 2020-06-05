@@ -13,4 +13,3 @@ yarn-error.log
 .idea
 laradock
 public/js/create-treatment.js
-composer.lock
