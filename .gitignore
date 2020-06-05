@@ -13,3 +13,4 @@ yarn-error.log
 .idea
 /public/js/create-treatment.js
 /public/mix-manifest.json
+laradock
