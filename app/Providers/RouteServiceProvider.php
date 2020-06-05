@@ -4,9 +4,17 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Finder\Finder;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    /**
+     * The path to the "home" route for your application.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
     /**
      * This namespace is applied to your controller routes.
      *
@@ -15,13 +23,6 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'App\Http\Controllers';
-
-    /**
-     * The path to the "home" route for your application.
-     *
-     * @var string
-     */
-    public const HOME = '/home';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -59,8 +60,11 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
+            ->namespace($this->namespace)
+            ->group(
+                function(){
+                    $this->requireRoutes('routes/Web');
+                });
     }
 
     /**
@@ -73,8 +77,21 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+            ->middleware('api')
+            ->namespace('App\Http\Controllers\Api')
+            ->group(
+                function(){
+                    $this->requireRoutes('routes/Api');
+                }
+            );
+    }
+
+    public function requireRoutes($path)
+    {
+        return collect(
+            Finder::create()->in(base_path($path))->name('*.php')
+        )->each(function($file){
+            require $file->getRealPath();
+        });
     }
 }
